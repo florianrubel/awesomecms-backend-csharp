@@ -10,7 +10,7 @@ namespace LibContent.Models.Cache
         [SwaggerParameter(ContentElementType.DOC_Slug)]
         public string ContentElementTypeSlug { get; set; }
 
-        [SwaggerParameter(Entities.ContentElement.DOC_Properties)]
+        [SwaggerParameter(LibContent.Entities.ContentElement.DOC_Properties)]
         public Dictionary<string, string> Properties { get; set; }
 
         [SwaggerParameter(RecursiveEntity<PageCacheItem>.DOC_Order)]

@@ -31,6 +31,12 @@ namespace LibContent.Models.Cache
         [SwaggerParameter(Page.DOC_Slug)]
         public string slug { get; set; }
 
+        [SwaggerParameter("Relative path within the page tree.")]
+        public string RelativePath { get; set; }
+
+        [SwaggerParameter("Full path with the domain.")]
+        public string Route { get; set; }
+
         [SwaggerParameter(LocalizedEntity<PageCacheItem>.DOC_LocaleId)]
         public Guid LocaleId { get; set; }
 

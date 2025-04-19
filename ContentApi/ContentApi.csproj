@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LibContent\LibContent.csproj" />
-    <ProjectReference Include="..\Shared\LibDb.csproj" />
+    <ProjectReference Include="..\LibDb\LibDb.csproj" />
   </ItemGroup>
 
 </Project>

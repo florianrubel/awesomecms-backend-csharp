@@ -1,36 +1,70 @@
 ﻿using LibContent.Entities;
-using MongoDB.Driver;
+using LibContent.Models.Cache;
+using StackExchange.Redis;
+using System.Text.Json;
 
 namespace ContentCacheApi.Services
 {
     public class ContentCacheService : IContentCacheService
     {
-        private readonly MongoClient _client;
-        private readonly IMongoDatabase _database;
-
-        private const string DATABASE = "ContentCache";
-        private const string COLLECTION = "Pages";
+        private readonly string _connectionString;
+        private const string PREFIX_PAGE = "PAGE:";
+        private const string PREFIX_ROUTE = "ROUTE:";
 
         public ContentCacheService(IConfiguration configuration)
         {
-            _client = new MongoClient(configuration.GetConnectionString("MongoDb"));
-            _database = _client.GetDatabase(DATABASE);
+            _connectionString = configuration.GetConnectionString("Redis");
         }
 
-        public async Task<Page> SetPageCache(Page page)
+        private string GetPageKey(Guid pageId)
         {
-            var collection = _database.GetCollection<Page>(COLLECTION);
-            var filter = Builders<Page>.Filter.Eq(p => p.Id, page.Id);
-            var options = new FindOneAndReplaceOptions<Page, Page> { IsUpsert = true };
-            await collection.FindOneAndReplaceAsync(filter, page, options);
+            return $"{PREFIX_PAGE}{pageId}";
+        }
+
+        private string GetRouteKey(string route)
+        {
+            return $"{PREFIX_ROUTE}{route}";
+        }
+
+        public async Task<PageCacheItem> SetPageCache(PageCacheItem page)
+        {
+            ConnectionMultiplexer redis = await ConnectionMultiplexer.ConnectAsync(_connectionString);
+            var db = redis.GetDatabase();
+            var key = GetPageKey(page.Id);
+            var json = JsonSerializer.Serialize(page);
+            await db.StringSetAsync(key, json);
+            redis.Close();
             return page;
         }
 
-        public async Task<Page?> GetPageCache(Guid id)
+        public async Task<PageCacheItem?> GetPageCache(Guid id)
         {
-            var collection = _database.GetCollection<Page>(COLLECTION);
-            var filter = Builders<Page>.Filter.Eq(p => p.Id, id);
-            return (await collection.FindAsync<Page>(filter)).FirstOrDefault();
+            ConnectionMultiplexer redis = await ConnectionMultiplexer.ConnectAsync(_connectionString);
+            var db = redis.GetDatabase();
+            var key = GetPageKey(id);
+            var json = await db.StringGetAsync(key);
+            if (json == RedisValue.Null) return null;
+            var page = JsonSerializer.Deserialize<PageCacheItem>(json);
+            redis.Close();
+            return page;
+        }
+
+        public async Task<CreateRouteCache> SetRouteCache(CreateRouteCache createRouteCache)
+        {
+            ConnectionMultiplexer redis = await ConnectionMultiplexer.ConnectAsync(_connectionString);
+            var db = redis.GetDatabase();
+            var key = GetRouteKey(createRouteCache.Route);
+            await db.StringSetAsync(key, createRouteCache.PageId.ToString());
+            return createRouteCache;
+        }
+
+        public async Task<Guid?> GetRouteCache(string route)
+        {
+            ConnectionMultiplexer redis = await ConnectionMultiplexer.ConnectAsync(_connectionString);
+            var db = redis.GetDatabase();
+            var key = GetRouteKey(route);
+            var guid = db.StringGet(key);
+            return guid == RedisValue.Null ? null : Guid.Parse(guid.ToString());
         }
     }
 

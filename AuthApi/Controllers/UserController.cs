@@ -1,8 +1,8 @@
 ﻿using AuthApi.Models.Identity.User;
 using AuthApi.Repositories.Identity;
 using AutoMapper;
+using LibDb.Controllers;
 using LibDb.Models.Api;
-using LibUniversal.Controllers;
 using LibUniversal.Helpers;
 using LibUniversal.Models.Api;
 using Microsoft.AspNetCore.Authorization;

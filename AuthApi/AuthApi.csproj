@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shared\LibDb.csproj" />
+    <ProjectReference Include="..\LibDb\LibDb.csproj" />
   </ItemGroup>
 
   <ItemGroup>

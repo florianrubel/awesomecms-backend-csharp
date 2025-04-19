@@ -66,7 +66,7 @@ namespace ContentApi.Repositories
             return result;
         }
 
-        public async override Task<IEnumerable<ContentElement>> UpdateRange(IEnumerable<ContentElement> entities, IDictionary<Guid, ContentElement>? oldEntities = null)
+        public async override Task<IEnumerable<ContentElement>> UpdateRange(IEnumerable<ContentElement> entities, IEnumerable<ContentElement>? oldEntities = null)
         {
             var results = await base.UpdateRange(entities, oldEntities);
 
