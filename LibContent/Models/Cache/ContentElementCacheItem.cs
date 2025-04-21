@@ -10,13 +10,16 @@ namespace LibContent.Models.Cache
         [SwaggerParameter(ContentElementType.DOC_Slug)]
         public string ContentElementTypeSlug { get; set; }
 
+        [SwaggerParameter(ContentElementType.DOC_FieldConfig)]
+        public string ContentELementTypeFieldConfig { get;set; }
+
         [SwaggerParameter(LibContent.Entities.ContentElement.DOC_Properties)]
-        public Dictionary<string, string> Properties { get; set; }
+        public Dictionary<string, object> Properties { get; set; }
 
         [SwaggerParameter(RecursiveEntity<PageCacheItem>.DOC_Order)]
         public int Order { get; set; }
 
-        [SwaggerParameter(LocalizedEntity<ContentElementCacheItem>.DOC_LocaleId)]
+        [SwaggerParameter(LocalizedRecursiveEntity<ContentElementCacheItem>.DOC_LocaleId)]
         public Guid LocaleId { get; set; }
     }
 }

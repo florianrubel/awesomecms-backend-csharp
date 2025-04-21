@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LibContent.Entities
 {
-    public class ContentElement : LocalizedEntity<ContentElement>
+    public class ContentElement : LocalizedRecursiveEntity<ContentElement>
     {
         public const string DOC_PageId = "The page id where the content is stored. Should always be the localized version of the page.";
         public const string DOC_Page = "The lazy loaded page object where the content is stored.";
@@ -19,6 +19,6 @@ namespace LibContent.Entities
         public Guid ContentElementTypeId { get; set; }
         public ContentElementType ContentElementType { get; set; }
 
-        public Dictionary<string, string> Properties { get; set; }
+        public Dictionary<string, object> Properties { get; set; }
     }
 }

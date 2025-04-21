@@ -8,6 +8,7 @@ namespace LibUniversal.Entities
     {
         public const string DOC_InternalLabel = "The internal label of the locale.";
         public const string DOC_LocaleCode = "The locale code of the locale. We recommend long ISO-Codes like en-US, de-DE, etc.";
+        public const string DOC_IsDefault = "Sets the locale as default so localization fallbacks will use this locale.";
 
         [MaxLength(InputSizes.DEFAULT_TEXT_MAX_LENGTH)]
         [SwaggerParameter(DOC_InternalLabel)]

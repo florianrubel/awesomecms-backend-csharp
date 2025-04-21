@@ -14,7 +14,7 @@ namespace LibContent.Models.Entities.ContentElementType
 
         [SwaggerParameter(LibContent.Entities.ContentElementType.DOC_Slug)]
         [MaxLength(InputSizes.DEFAULT_TEXT_MAX_LENGTH)]
-        public string Slug { get; set; }
+        public string? Slug { get; set; }
 
         [SwaggerParameter(LibContent.Entities.ContentElementType.DOC_FieldConfig)]
         public Dictionary<string, FieldConfig> FieldConfigs { get; set; }

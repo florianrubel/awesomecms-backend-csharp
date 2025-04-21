@@ -21,10 +21,19 @@ namespace ContentApi.Repositories
             _contentCacheService = contentCacheService;
         }
 
+        public void EnsureIntegrity(Page page)
+        {
+            if (page.slug == null || page.slug.Trim().Length == 0) PageTreeService.ResolveSlug(page);
+            else if (!page.LockSlug) page.slug = PageTreeService.ResolveSlug(page);
+            if (page.LocalizationParent != null)
+            {
+                page.Order = page.LocalizationParent.Order;
+            }
+        }
+
         public async override Task<Page> Create(Page entity)
         {
-            if (entity.slug == null && !entity.LockSlug) entity.slug = PageTreeService.ResolveSlug(entity);
-
+            EnsureIntegrity(entity);
             var result = await base.Create(entity);
 
             await _contentCacheService.SetContentCache(result);
@@ -36,7 +45,7 @@ namespace ContentApi.Repositories
         {
             foreach (var entity in entities)
             {
-                if (entity.slug == null && !entity.LockSlug) entity.slug = PageTreeService.ResolveSlug(entity);
+                EnsureIntegrity(entity);
             }
 
             var results = await base.CreateRange(entities);
@@ -82,7 +91,7 @@ namespace ContentApi.Repositories
 
         public async override Task<Page> Update(Page entity, Page oldEntity)
         {
-            if (entity.slug == null && !entity.LockSlug) entity.slug = PageTreeService.ResolveSlug(entity);
+            EnsureIntegrity(entity);
 
             var slugChanged = oldEntity.slug != entity.slug;
             var parentChanged = oldEntity.ParentId != entity.ParentId;
@@ -102,6 +111,7 @@ namespace ContentApi.Repositories
         {
             foreach (var entity in entities)
             {
+                EnsureIntegrity(entity);
                 var oldEntity = oldEntities.Where(o => o.Id == entity.Id).FirstOrDefault();
                 var slugChanged = oldEntity == null || oldEntity.slug != entity.slug;
                 var parentChanged = oldEntity == null || oldEntity.ParentId != entity.ParentId;

@@ -1,11 +1,12 @@
-﻿using LibUniversal.Constants;
-using LibUniversal.Models.Entities.LocalizedEntity;
+﻿using LibContent.Models.Page;
+using LibUniversal.Constants;
+using LibUniversal.Models.Entities.LocalizedRecursiveEntity;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 
 namespace LibContent.Models.Entities.Page
 {
-    public class PatchPage : PatchLocalizedEntity<PatchPage>
+    public class PatchPage : PatchLocalizedRecursiveEntity<PatchPage>
     {
         [SwaggerParameter(LibContent.Entities.Page.DOC_Title)]
         [MaxLength(InputSizes.DEFAULT_TEXT_MAX_LENGTH)]
@@ -24,7 +25,7 @@ namespace LibContent.Models.Entities.Page
         public string? MetaDescription { get; set; }
 
         [SwaggerParameter(LibContent.Entities.Page.DOC_MetaTags)]
-        public Dictionary<string, string>? MetaTags { get; set; }
+        public Dictionary<string, MetaTag>? MetaTags { get; set; }
 
         [SwaggerParameter(LibContent.Entities.Page.DOC_IsRoot)]
         public bool? IsRoot { get; set; } = false;
@@ -39,5 +40,8 @@ namespace LibContent.Models.Entities.Page
 
         [SwaggerParameter(LibContent.Entities.Page.DOC_LockSlug)]
         public bool? LockSlug { get; set; }
+
+        [SwaggerParameter(LibContent.Entities.Page.DOC_InheritMetaTagsFromParent)]
+        public bool InheritMetaTagsFromParent { get; set; }
     }
 }

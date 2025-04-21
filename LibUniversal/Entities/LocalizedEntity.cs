@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LibUniversal.Entities
 {
-    public class LocalizedEntity<ParentType> : RecursiveEntity<ParentType>
+    public class LocalizedEntity<ParentType> : UuidBaseEntity
     {
         public const string DOC_LocaleId = "The id of the locale.";
         public const string DOC_Locale = "The lazy loaded locale object";
@@ -27,6 +27,6 @@ namespace LibUniversal.Entities
         public virtual List<ParentType> LocalizedChildren { get; set; } = new List<ParentType>();
 
         [SwaggerParameter(DOC_UseLocalizationFallback)]
-        public bool UseLocalizationFallback { get; set; }
+        public bool UseLocalizationFallback { get; set; } = true;
     }
 }

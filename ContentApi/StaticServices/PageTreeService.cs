@@ -1,4 +1,5 @@
 ﻿using LibContent.Entities;
+using LibContent.Models.Cache;
 using LibUniversal.StaticServices;
 
 namespace ContentApi.StaticServices
@@ -18,19 +19,30 @@ namespace ContentApi.StaticServices
 
             return page.slug;
         }
-        public static string GetFullRelativePath(Page page)
+
+        public static void ResolveRoute(PageCacheItem cacheItem, Page? parent)
         {
-            var path = "/";
-            if (page.IsRoot) return $"{page.Domain ?? ""}{path}";
-
-            path = $"{path}{page.slug ?? ResolveSlug(page)}";
-
-            if (!page.IsRoot && page.Parent != null)
+            if (cacheItem.IsRoot)
             {
-                path = $"{GetFullRelativePath(page.Parent)}{path}";
+                cacheItem.RelativePath = "";
+                cacheItem.Route = cacheItem.Domain ?? "";
+                return;
+            }
+            cacheItem.RelativePath = $"/{cacheItem.slug}";
+
+            if (parent == null) return;
+
+            if (parent.IsRoot)
+            {
+                cacheItem.Domain = parent.Domain;
+                cacheItem.Route = $"{cacheItem.Domain}{cacheItem.RelativePath}";
+                return;
             }
 
-            return path;
+            var parentSlug = parent.slug ?? ResolveSlug(parent);
+            cacheItem.RelativePath = $"/{parentSlug}{cacheItem.RelativePath}";
+
+            if (parent.Parent != null) ResolveRoute(cacheItem, parent.Parent);
         }
     }
 }
